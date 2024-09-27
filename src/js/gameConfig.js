@@ -1,3 +1,6 @@
+// import Menu from "./scenes/menu.js";
+import Lobby from "./scenes/lobby.js";
+
 const config = {
   type: Phaser.AUTO,
   width: 1024,
@@ -13,7 +16,8 @@ const config = {
       debug: true, // ! PENSER À LE PASSER À FALSE À LA FIN
     },
   },
-  scene: [],
+  scene: [Lobby],
+  backgroundColor: "#32a838",
 };
 
 const game = new Phaser.Game(config);
