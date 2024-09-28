@@ -19,10 +19,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   preload() {}
 
-  create() {
-    this.player = this.physics.add.sprite(100, 450, "playerIdle");
-    this.player.setCollideWorldBounds(true);
-  }
+  create() {}
 
   update(cursors, pointer) {
     let velocityX = 0;
@@ -62,7 +59,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
     }
 
-    if (pointer.leftButtonDown()) {
+    if (pointer.leftButtonDown() || cursors.space.isDown) {
       this.Attack("fist");
     }
 
