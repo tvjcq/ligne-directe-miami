@@ -59,7 +59,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
     }
 
-    if (pointer.leftButtonDown() || cursors.space.isDown) {
+    if (pointer.leftButtonDown()) {
       this.Attack("fist");
     }
 
