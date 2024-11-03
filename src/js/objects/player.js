@@ -9,6 +9,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.punchNumber = 0;
     this.canAttack = true;
+    this.weapon = null;
+    this.projectiles = this.scene.physics.add.group(); // Ajouter un groupe pour les projectiles
+    this.lastShotTime = 0; // Ajouter une propriété pour le temps du dernier tir
+    this.shootCooldown = 100; // Ajouter une propriété pour le délai entre les tirs (en millisecondes)
 
     this.punchZone = this.scene.add.rectangle(0, 0, 50, 50);
     this.scene.physics.add.existing(this.punchZone);
@@ -60,7 +64,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     if (pointer.leftButtonDown()) {
-      this.Attack("fist");
+      if (this.weapon) {
+        this.shoot(pointer.worldX, pointer.worldY);
+      } else {
+        this.Attack();
+      }
     }
 
     // Normaliser la vitesse en diagonale
@@ -91,29 +99,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.punchZone.setRotation(Phaser.Math.DegToRad(this.angle));
   }
 
-  Attack(weapon) {
+  Attack() {
     if (this.canAttack === false) return;
     this.canAttack = false;
-    switch (weapon) {
-      case "fist":
-        this.punchZone.body.enable = true;
-        if (this.punchNumber === 0) {
-          this.setTexture("playerPunch1");
-          this.punchNumber = 1;
-        } else if (this.punchNumber === 1) {
-          this.setTexture("playerPunch2");
-          this.punchNumber = 0;
-        }
-        break;
-      case "pistol":
-        break;
-      case "shotgun":
-        break;
-      case "rifle":
-        break;
-      default:
-        break;
+
+    this.punchZone.body.enable = true;
+    if (this.punchNumber === 0) {
+      this.setTexture("playerPunch1");
+      this.punchNumber = 1;
+    } else if (this.punchNumber === 1) {
+      this.setTexture("playerPunch2");
+      this.punchNumber = 0;
     }
+
     setTimeout(() => {
       this.punchZone.body.enable = false;
     }, 200);
@@ -121,5 +119,43 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.canAttack = true;
       this.setTexture("playerIdle");
     }, 500);
+  }
+
+  shoot(targetX, targetY) {
+    const currentTime = this.scene.time.now;
+    if (currentTime - this.lastShotTime < this.shootCooldown) {
+      return; // Ne pas tirer si le délai entre les tirs n'est pas écoulé
+    }
+
+    this.lastShotTime = currentTime; // Mettre à jour le temps du dernier tir
+
+    const projectile = this.scene.physics.add.sprite(
+      this.x,
+      this.y,
+      "projectile"
+    );
+
+    const angle = Phaser.Math.Angle.Between(this.x, this.y, targetX, targetY);
+    projectile.setScale(0.05);
+    projectile.setRotation(angle);
+    this.projectiles.add(projectile);
+    const speed = 500;
+    this.scene.physics.velocityFromRotation(
+      angle,
+      speed,
+      projectile.body.velocity
+    );
+
+    projectile.body.onWorldBounds = true;
+    projectile.body.world.on("worldbounds", (body) => {
+      if (body.gameObject === projectile) {
+        projectile.destroy();
+      }
+    });
+  }
+
+  pickUpWeapon(weapon) {
+    this.weapon = weapon;
+    weapon.destroy(); // Supprimer l'arme du sol
   }
 }

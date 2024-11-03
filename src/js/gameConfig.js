@@ -1,5 +1,6 @@
-// import Menu from "./scenes/menu.js";
+import Menu from "./scenes/menu.js";
 import Lobby from "./scenes/lobby.js";
+import GameOver from "./scenes/gameOver.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -13,10 +14,10 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 0 },
-      debug: true, // ! PENSER À LE PASSER À FALSE À LA FIN
+      debug: false, // ! PENSER À LE PASSER À FALSE À LA FIN
     },
   },
-  scene: [Lobby],
+  scene: [Menu, Lobby, GameOver],
 };
 
 const game = new Phaser.Game(config);

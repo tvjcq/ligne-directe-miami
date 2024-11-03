@@ -19,7 +19,6 @@ export default class Ennemies extends Phaser.Physics.Arcade.Sprite {
     this.playerDetected = false;
 
     // Définir la direction initiale de l'ennemi (vers la droite)
-    // ! Remplacer par un pathfinding
     this.direction = Phaser.Math.DegToRad(0); // 0 degrés en radians
     this.changeDirectionInProgress = false; // Nouvelle propriété
 
@@ -67,9 +66,6 @@ export default class Ennemies extends Phaser.Physics.Arcade.Sprite {
       const y = startY + Math.sin(angle) * this.visionDistance;
       points.push(new Phaser.Math.Vector2(x, y));
     }
-
-    // Dessiner le cône de vision
-    this.visionCone.fillPoints(points, true);
 
     // Vérifier si le joueur est dans le cône de vision
     const playerInCone = Phaser.Geom.Polygon.ContainsPoint(

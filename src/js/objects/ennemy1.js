@@ -3,8 +3,6 @@ import Ennemies from "./ennemies.js";
 export default class Ennemy1 extends Ennemies {
   constructor(scene, x, y, texture) {
     super(scene, x, y, texture);
-    this.path = [];
-    this.pathIndex = 0;
   }
 
   // Vous pouvez surcharger les méthodes de la classe parente si nécessaire
